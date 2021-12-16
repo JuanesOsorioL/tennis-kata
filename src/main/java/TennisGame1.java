@@ -9,7 +9,8 @@ public class TennisGame1 implements TennisGame {
 
     private static final String[] diferenteScore = {"Love", "Fifteen", "Thirty", "Forty"};
     private static final String[] scores = {"Love-All", "Fifteen-All", "Thirty-All", "Deuce"};
-    private static final String[] result = {"Advantage player1", "Win for player1", "Advantage player2", "Win for player2"};
+    private static final String[] result = {"Advantage ", "Win for ", "Advantage ", "Win for "};
+    private String valor;
 
     public TennisGame1(String player1Name, String player2Name) {
         this.player1Name = player1Name;
@@ -25,14 +26,13 @@ public class TennisGame1 implements TennisGame {
 
     public String getScore() {
         String score;
-
-        if (score1 == score2)
+        if (isIgual(score1, score2))
         {
             score=igualScore(score1);
         }
-        else if (score1 >=4 || score2 >=4)
+        else if (isMayorIgual(score1, 4) || isMayorIgual(score2, 4))
         {
-           score =minimoDeSets(score1,score2);
+           score =minDeSets(score1,score2);
         }
         else
         {
@@ -41,19 +41,30 @@ public class TennisGame1 implements TennisGame {
         return score;
     }
 
+    private boolean isMayorIgual(int score1, int i) {
+        return score1 >= i;
+    }
+
+    private boolean isIgual(int score1, int score2) {
+        return score1 == score2;
+    }
+
+
     public String igualScore(int score) {
-        return score >= 3 ? scores[3] : scores[score];
+        return isMayorIgual(score, 3) ? scores[3] : scores[score];
     }
 
     public String posibleGanador(int minusResult) {
-        return minusResult==1?result[0]:result[2];
+        valor = isIgual(minusResult, 1) ?result[0].concat(player1Name):result[2].concat(player2Name);
+        return valor;
     }
 
     public String ganador(int minusResult) {
-        return minusResult>=2?result[1]:result[3];
+        valor = isMayorIgual(minusResult, 2) ? result[1].concat(player1Name) : result[3].concat(player2Name);
+        return valor;
     }
 
-    public String minimoDeSets(int score1,int score2) {
+    public String minDeSets(int score1,int score2) {
         int minusResult = score1 - score2;
         switch (minusResult){
             case -1:

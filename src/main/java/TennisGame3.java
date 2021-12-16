@@ -3,8 +3,8 @@ public class TennisGame3 implements TennisGame {
     
     private int p2;
     private int p1;
-    private String p1N;
-    private String p2N;
+    private final String p1N;
+    private final String p2N;
 
     String[] p = new String[]{"Love", "Fifteen", "Thirty", "Forty"};
 
@@ -14,18 +14,22 @@ public class TennisGame3 implements TennisGame {
     }
 
     public String getScore() {
-        if (menorACuatro(p1 , p2)) {
-            return marcador(p1 , p2);
-        } else {
-            if (sonIguales(p1 , p2))
-                return "Deuce";
-            return resultado(p1 , p2);
-        }
+        return menorACuatro(p1 , p2) ? marcador(p1 , p2) : getDifferentScore();
     }
+
+    public String getDifferentScore() {
+        return sonIguales(p1 , p2) ? "Deuce" : resultado(p1 , p2);
+    }
+
 
     public String resultado(int p1,int p2) {
         String s = jugador(p1 , p2);
-        return (resta(p1 , p2)*resta(p1 , p2) == 1) ? "Advantage " + s : "Win for " + s;
+        String valor=(sonIguales(multiplicar(p1, p2),1)) ? "Advantage ": "Win for ";
+        return valor.concat(s);
+    }
+
+    private int multiplicar(int p1, int p2) {
+        return resta(p1, p2) * resta(p1, p2);
     }
 
     public int resta(int p1,int p2) {
@@ -33,7 +37,11 @@ public class TennisGame3 implements TennisGame {
     }
 
     public String jugador(int p1,int p2) {
-        return p1 > p2 ? p1N : p2N;
+        return isaMayor(p1, p2) ? p1N : p2N;
+    }
+
+    private boolean isaMayor(int p1, int p2) {
+        return p1 > p2;
     }
 
     public String marcador(int p1,int p2) {
@@ -41,11 +49,15 @@ public class TennisGame3 implements TennisGame {
     }
 
     public Boolean menorACuatro(int p1,int p2) {
-        return p1 < 4 && p2 < 4 && !maxJuegos(p1,p2);
+        return isMenor(p1) && isMenor(p2) && !maxJuegos(p1,p2);
+    }
+
+    private boolean isMenor(int p1) {
+        return p1 < 4;
     }
 
     public Boolean maxJuegos(int p1,int p2) {
-        return (p1 + p2 == 6);
+        return sonIguales((p1 + p2) , 6);
     }
 
     public Boolean sonIguales(int p1,int p2) {
@@ -53,7 +65,7 @@ public class TennisGame3 implements TennisGame {
     }
 
     public void wonPoint(String playerName) {
-        if (playerName == "player1")
+        if (playerName.equals("player1"))
             this.p1 += 1;
         else
             this.p2 += 1;

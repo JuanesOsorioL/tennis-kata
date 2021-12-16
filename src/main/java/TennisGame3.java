@@ -14,17 +14,17 @@ public class TennisGame3 implements TennisGame {
     }
 
     public String getScore() {
-        return menorACuatro(p1 , p2) ? marcador(p1 , p2) : getDifferentScore();
+        return Boolean.TRUE.equals(menorACuatro(p1 , p2)) ? marcador(p1 , p2) : getDifferentScore();
     }
 
     public String getDifferentScore() {
-        return sonIguales(p1 , p2) ? "Deuce" : resultado(p1 , p2);
+        return Boolean.TRUE.equals(sonIguales(p1 , p2)) ? "Deuce" : resultado(p1 , p2);
     }
 
 
     public String resultado(int p1,int p2) {
         String s = jugador(p1 , p2);
-        String valor=(sonIguales(multiplicar(p1, p2),1)) ? "Advantage ": "Win for ";
+        String valor=Boolean.TRUE.equals((sonIguales(multiplicar(p1, p2),1))) ? "Advantage ": "Win for ";
         return valor.concat(s);
     }
 
@@ -45,7 +45,7 @@ public class TennisGame3 implements TennisGame {
     }
 
     public String marcador(int p1,int p2) {
-        return sonIguales(p1 , p2) ? p[p1] + "-All" : p[p1] + "-" + p[p2];
+        return Boolean.TRUE.equals(sonIguales(p1 , p2)) ? p[p1] + "-All" : p[p1] + "-" + p[p2];
     }
 
     public Boolean menorACuatro(int p1,int p2) {

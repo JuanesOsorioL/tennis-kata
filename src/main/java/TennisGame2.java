@@ -1,14 +1,14 @@
 
 public class TennisGame2 implements TennisGame
 {
-    public int P1point = 0;
-    public int P2point = 0;
-    
-    public String P1res = "";
-    public String P2res = "";
-    private String player1Name;
-    private String player2Name;
-    public String score = "";
+    private int pointA = 0;
+    private int pointB = 0;
+
+    private String pAres = "";
+    private String pBres = "";
+    private final String player1Name;
+    private final String player2Name;
+    private String score = "";
 
     private static final String[] diferenteScore = {"Love", "Fifteen", "Thirty", "Forty"};
 
@@ -17,166 +17,140 @@ public class TennisGame2 implements TennisGame
         this.player2Name = player2Name;
     }
 
-    public String Love (int P1point){
-         return isMenor(P1point, 4) ? diferenteScore[P1point]:"";
+    public String love (int scoreA){
+         return isMenor(scoreA, 4) ? diferenteScore[scoreA]:"";
     }
 
-    public String all (int P1point){
-        String valor = isMenor(P1point, 3) ? diferenteScore[P1point]:"";
+    public String all (int scoreA){
+        String valor = isMenor(scoreA, 3) ? diferenteScore[scoreA]:"";
         return valor.concat("-All");
     }
 
-    public String result1 (int P1point,int P2point){
-        if (isIgual(P1point, 2))
-            P1res="Thirty";
-        if (isIgual(P1point, 3))
-            P1res="Forty";
-        if (isIgual(P2point, 1))
-            P2res="Fifteen";
-        if (isIgual(P2point, 2))
-            P2res="Thirty";
-        return P1res + "-" + P2res;
+    public String result1 (int scoreA,int scoreB){
+        if (obtenerValor(scoreA,3)){
+            pAres=diferenteScore[scoreA];
+        }
+        if (obtenerValor(scoreB,1)){
+            pBres=diferenteScore[scoreB];
+        }
+        return pAres + "-" + pBres;
     }
 
-    public String result2 (int P2point,int P1point){
-        if (isIgual(P2point, 2))
-            P2res="Thirty";
-        if (isIgual(P2point, 3))
-            P2res="Forty";
-        if (isIgual(P1point, 1))
-            P1res="Fifteen";
-        if (isIgual(P1point, 2))
-            P1res="Thirty";
-        return P1res + "-" + P2res;
+    private boolean obtenerValor(int principal ,int n) {
+        return isIgual(principal, 2) || isIgual(principal, n);
+    }
+
+    public String result2 (int scoreB,int scoreA){
+        if (obtenerValor(scoreA,1)){
+            pAres=diferenteScore[scoreA];
+        }
+        if (obtenerValor(scoreB,3)){
+            pBres=diferenteScore[scoreB];
+        }
+        return pAres + "-" + pBres;
+    }
+
+
+
+    private void isIgualScore(int scoreA,int scoreB) {
+        if (operatorAnd(isIgual(scoreA, scoreB), isMenor(scoreA, 4)))
+            score=all(scoreA);
     }
 
     public String getScore(){
 
-        if (isIgual(P1point, P2point) && isMenor(P1point, 4))
-        {
-            score=all(P1point);
-        }
+        isIgualScore(pointA, pointB);
 
-        if (isIgual(P1point, P2point) && isMayorIgual(P1point, 3))
+        if (operatorAnd(isIgual(pointA, pointB), isMayorIgual(pointA, 3)))
             score = "Deuce";
 
 
-        if (isMayor(P1point, 0) && isIgual(P2point, 0))
+        if (operatorAnd(isMayor(pointA, 0), isIgual(pointB, 0)))
         {
-            P1res=Love(P1point);
-            P2res = "Love";
-            score = P1res + "-" + P2res;
+            pAres=love(pointA);
+            pBres = "Love";
+            score = pAres + "-" + pBres;
         }
 
-        if (isMayor(P2point, 0) && isIgual(P1point, 0))
+        if (operatorAnd(isMayor(pointB, 0), isIgual(pointA, 0)))
         {
-            P2res=Love(P2point);
-            P1res = "Love";
-            score = P1res + "-" + P2res;
-
+            pBres=love(pointB);
+            pAres = "Love";
+            score = pAres + "-" + pBres;
         }
 
-        playSets( P1point, P2point);
-
-        Advantage( P1point, P2point);
-
-        win( P1point, P2point);
-
+        playSets( pointA, pointB);
+        advantage( pointA, pointB);
+        win( pointA, pointB);
         return score;
     }
 
-    private void playSets(int P1point, int P2point) {
-        if (isMayor(P1point, P2point) && isMenor(P1point, 4))
-        {
-            score=result1(P1point, P2point);
-        }
-
-        if (isMayor(P2point, P1point) && isMenor(P2point, 4))
-        {
-            score =result2(P2point,P1point);
-        }
+    private void playSets(int scoreA, int scoreB) {
+        if (operatorAnd(isMayor(scoreA, scoreB), isMenor(scoreA, 4)))
+            score=result1(scoreA, scoreB);
+        if (operatorAnd(isMayor(scoreB, scoreA), isMenor(scoreB, 4)))
+            score =result2(scoreB,scoreA);
     }
 
-//////
+    private boolean operatorAnd(boolean mayor, boolean menor) {
+        return mayor && menor;
+    }
 
-    private void Advantage(int P1point, int P2point) {
-        if (isAdvantage(P1point, P2point))
-        {
+
+    private void advantage(int scoreA, int scoreB) {
+        if (isAdvantage(scoreA, scoreB))
             resultAdvantageOrWin("Advantage ", player1Name);
-        }
-        if (isAdvantage(P2point, P1point))
-        {
+        if (isAdvantage(scoreB, scoreA))
             resultAdvantageOrWin("Advantage ", player2Name);
-        }
     }
 
-    private String resultAdvantageOrWin(String s, String player1Name) {
-        return score = s.concat(player1Name);
+    private void resultAdvantageOrWin(String s, String player1Name) {
+        score = s.concat(player1Name);
     }
 
-    private void win(int P1point, int P2point) {
-        if (isWin(P1point, P2point))
-        {
+    private void win(int scoreA, int scoreB) {
+        if (isWin(scoreA, scoreB))
             resultAdvantageOrWin("Win for ", player1Name);
-        }
-        if (isWin(P2point, P1point))
-        {
+        if (isWin(scoreB, scoreA))
             resultAdvantageOrWin("Win for ", player2Name);
-        }
     }
 
-    //////
-
-    private boolean isWin(int p1point, int p2point) {
-        return isMayorIgual(p1point, 4) && isMayorIgual(p2point, 0) && isMayorIgual(p1point - p2point, 2);
+    private boolean isWin(int valorA, int valorB) {
+        return isMayorIgual(valorA, 4) && isMayorIgual(valorB, 0) && isMayorIgual(valorA - valorB, 2);
     }
 
-    private boolean isAdvantage(int p1point, int p2point) {
-        return isMayor(p1point, p2point) && isMayorIgual(p2point, 3);
+    private boolean isAdvantage(int valorA, int valorB) {
+        return operatorAnd(isMayor(valorA, valorB), isMayorIgual(valorB, 3));
     }
 
-    private boolean isMayorIgual(int p1point, int i) {
-        return p1point >= i;
+    private boolean isMayorIgual(int scoreA, int i) {
+        return scoreA >= i;
     }
 
-    private boolean isMayor(int p1point, int i) {
-        return p1point > i;
+    private boolean isMayor(int scoreA, int i) {
+        return scoreA > i;
     }
 
-    private boolean isMenor(int p1point, int i) {
-        return p1point < i;
+    private boolean isMenor(int scoreA, int i) {
+        return scoreA < i;
     }
 
-    private boolean isIgual(int p1point, int p2point) {
-        return p1point == p2point;
+    private boolean isIgual(int scoreA, int scoreB) {
+        return scoreA == scoreB;
     }
 
-    public void SetP1Score(int number){
-        for (int i = 0; isMenor(i, number); i++)
-        {
-            P1Score();
-        }
+    public void paScore(){
+        pointA++;
     }
     
-    public void SetP2Score(int number){
-        for (int i = 0; isMenor(i, number); i++)
-        {
-            P2Score();
-        }
-    }
-    
-    public void P1Score(){
-        P1point++;
-    }
-    
-    public void P2Score(){
-        P2point++;
+    public void pbScore(){
+        pointB++;
     }
 
     public void wonPoint(String player) {
-        if (player == "player1")
-            P1Score();
+        if (player.equals("player1"))
+            paScore();
         else
-            P2Score();
+            pbScore();
     }
 }
